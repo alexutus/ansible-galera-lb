@@ -1,9 +1,9 @@
 galaxy_info:
-  author: barajasfab
-  description: haproxy configured to use TLS and floating ip reassignment.
+  author: cmndrsp0ck
+  description: haproxy configured to load balance queries among MariaDB Galera cluster
   company: N/A
 
-  license: license (GPLv2, CC-BY, etc)
+  license: GPL-3.0
 
   min_ansible_version: 2.4
 
@@ -16,7 +16,6 @@ galaxy_info:
 
   galaxy_tags:
     - haproxy
-    - TLS
     - DigitalOcean
 
 dependencies: []
