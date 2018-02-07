@@ -1,0 +1,103 @@
+---
+- name: Adding backports repository
+  apt_repository: 
+    repo: "deb http://httpredir.debian.org/{{ ansible_os_family | lower }} {{ ansible_distribution_release }}-backports main"
+    state: present
+    filename: backports.list
+
+- name: Adding apt key for haproxy dedicated repo
+  apt_key:
+    url: "https://haproxy.debian.net/bernat.debian.org.gpg"
+    state: present
+  tags: apt-key-add
+
+- name: Adding haproxy dedicated repository
+  apt_repository: 
+    repo: "deb http://haproxy.debian.net {{ ansible_distribution_release }}-backports-1.8 main"
+    state: present
+    filename: haproxy.list
+    update_cache: yes
+  tags: update-sources
+
+- name: install heartbeat and haproxy components
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - haproxy=1.8.*
+    - heartbeat
+
+- name: configure rsyslog - load imudp
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: '#module\(load="imudp"\)'
+    line: 'module(load="imudp")'
+    state: present
+  notify: restart rsyslog
+
+- name: configure rsyslog - set imudp to port 514
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: '#input\(type="imudp" port="514"\)'
+    line: 'input(type="imudp" port="514")'
+    state: present
+  notify: restart rsyslog
+
+- name: configure heartbeat
+  template:
+    src: ha.cf.j2
+    dest: /etc/ha.d/ha.cf
+    mode: 0644
+
+- name: configure authkey
+  template:
+    src: authkeys.j2
+    dest: /etc/ha.d/authkeys
+    mode: 0600
+
+- name: configura haresources
+  template:
+    src: haresources.j2
+    dest: /etc/ha.d/haresources
+
+- name: install floating ip assigner
+  copy:
+    src: assign-ip
+    dest: /usr/local/bin/assign-ip
+    mode: 0755
+
+- name: install floating ip manager
+  template:
+    src: floatip.j2
+    dest: /etc/init.d/floatip
+    mode: 0755
+
+- name: start heartbeat service
+  service:
+    name: heartbeat
+    state: started
+    enabled: yes
+
+- name: configure haproxy service for galera
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+
+- name: enable haproxy
+  lineinfile:
+    dest: /etc/default/haproxy
+    state: present
+    regexp: 'ENABLED=0'
+    line: 'ENABLED=1'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: start haproxy
+  service:
+    name: haproxy
+    state: restarted
+    enabled: yes
