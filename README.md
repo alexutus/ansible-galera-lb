@@ -46,7 +46,7 @@ vault_haproxy_stats_port: "<port_number>"
 Dependencies
 ------------
 
-This roles was created to be used with the *cmndrsp0ck.galera-cluster* role
+This roles was created to be used with the *cmndrsp0ck.galera-cluster-node* role
 
 Example Playbook
 ----------------
