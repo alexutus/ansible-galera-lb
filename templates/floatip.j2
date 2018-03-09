@@ -1,4 +1,13 @@
 #!/bin/bash
+### BEGIN INIT INFO
+# Provides:          floatip
+# Required-Start:    $local_fs $network $remote_fs $syslog $named
+# Required-Stop:     $local_fs $remote_fs $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: floating ip re-assignment
+# Description:       This file shoud be used for DigitalOcean floating ip re-assignment
+### END INIT INFO
 
 param=$1
 

@@ -1,4 +1,4 @@
-# galera-lb
+# ansible-galera-lb
 
 ### Features
 
@@ -59,7 +59,7 @@ Including an example of how to use your role (for instance, with variables passe
   become: True
   tasks:
     - import_role:
-        name: cmndrsp0ck.galera-lb
+        name: cmndrsp0ck.ansible-galera-lb
 ```
 
 License
