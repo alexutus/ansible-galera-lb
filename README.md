@@ -59,7 +59,7 @@ Including an example of how to use your role (for instance, with variables passe
   become: True
   tasks:
     - import_role:
-        name: cmndrsp0ck.ansible-galera-lb
+        name: ansible-galera-lb
 ```
 
 License
