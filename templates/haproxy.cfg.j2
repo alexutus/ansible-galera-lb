@@ -5,6 +5,7 @@ global
         user    haproxy
         group   haproxy
         maxconn 4096
+        stats socket ipv4@127.0.0.1:9999 level admin
 
 defaults
         log     global
